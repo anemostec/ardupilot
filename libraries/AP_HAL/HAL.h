@@ -11,6 +11,7 @@
 #include "UARTDriver.h"
 #include "system.h"
 #include "OpticalFlow.h"
+#include "ExternalCPU.h"
 
 class AP_HAL::HAL {
 public:
@@ -30,7 +31,8 @@ public:
         AP_HAL::RCOutput*   _rcout,
         AP_HAL::Scheduler*  _scheduler,
         AP_HAL::Util*       _util,
-        AP_HAL::OpticalFlow *_opticalflow)
+        AP_HAL::OpticalFlow *_opticalflow,
+        AP_HAL::ExternalCPU *_externalcpu)
         :
         uartA(_uartA),
         uartB(_uartB),
@@ -48,7 +50,8 @@ public:
         rcout(_rcout),
         scheduler(_scheduler),
         util(_util),
-        opticalflow(_opticalflow)
+        opticalflow(_opticalflow),
+        externalcpu(_externalcpu)
     {
         AP_HAL::init();
     }
@@ -88,4 +91,5 @@ public:
     AP_HAL::Scheduler*  scheduler;
     AP_HAL::Util        *util;
     AP_HAL::OpticalFlow *opticalflow;
+    AP_HAL::ExternalCPU *externalcpu;
 };

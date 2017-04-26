@@ -28,6 +28,7 @@ namespace AP_HAL {
     class Scheduler;
     class Semaphore;
     class OpticalFlow;
+    class ExternalCPU;
 
     class Util;
 

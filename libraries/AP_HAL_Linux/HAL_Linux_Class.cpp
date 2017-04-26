@@ -13,14 +13,17 @@
 #include <AP_Module/AP_Module.h>
 
 #include "AnalogIn_ADS1115.h"
+#include "AnalogIn_Cerebro.h"
 #include "AnalogIn_IIO.h"
 #include "AnalogIn_Navio2.h"
 #include "AnalogIn_Raspilot.h"
+#include "ArduinoBoard.h"
 #include "GPIO.h"
 #include "I2CDevice.h"
 #include "OpticalFlow_Onboard.h"
 #include "RCInput.h"
 #include "RCInput_AioPRU.h"
+#include "RCInput_Cerebro.h"
 #include "RCInput_DSM.h"
 #include "RCInput_Navio2.h"
 #include "RCInput_PRU.h"
@@ -34,6 +37,7 @@
 #include "RCOutput_AeroIO.h"
 #include "RCOutput_AioPRU.h"
 #include "RCOutput_Bebop.h"
+#include "RCOutput_Cerebro.h"
 #include "RCOutput_Disco.h"
 #include "RCOutput_PCA9685.h"
 #include "RCOutput_PRU.h"
@@ -100,6 +104,8 @@ static AnalogIn_Raspilot analogIn;
 static AnalogIn_IIO analogIn;
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_NAVIO2
 static AnalogIn_Navio2 analogIn;
+#elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_CEREBRO
+static AnalogIn_Cerebro analogIn;
 #else
 static Empty::AnalogIn analogIn;
 #endif
@@ -131,6 +137,9 @@ static GPIO_RPI gpioDriver;
       CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_DISCO || \
       CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_AERO
 static GPIO_Sysfs gpioDriver;
+/* If the board is the Cerebro, use GPIO_Cerebro as GPIO driver */
+#elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_CEREBRO
+static GPIO_Cerebro gpioDriver;
 #else
 static Empty::GPIO gpioDriver;
 #endif
@@ -166,6 +175,8 @@ static RCInput_Multi rcinDriver{2, new RCInput_SBUS, new RCInput_115200("/dev/ua
 static RCInput_SBUS rcinDriver;
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_NAVIO2
 static RCInput_Navio2 rcinDriver;
+#elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_CEREBRO
+static RCInput_Cerebro rcinDriver;
 #else
 static RCInput rcinDriver;
 #endif
@@ -218,6 +229,8 @@ static RCOutput_Disco rcoutDriver(i2c_mgr_instance.get_device(HAL_RCOUT_DISCO_BL
 static RCOutput_Sysfs rcoutDriver(0, 0, 14);
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_AERO
 static RCOutput_AeroIO rcoutDriver;
+#elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_CEREBRO
+static RCOutput_Cerebro rcoutDriver;
 #else
 static Empty::RCOutput rcoutDriver;
 #endif
@@ -230,6 +243,13 @@ static OpticalFlow_Onboard opticalFlow;
 #else
 static Empty::OpticalFlow opticalFlow;
 #endif
+
+#if CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_CEREBRO
+static ArduinoBoard     externalCpu(&uartFDriver);
+#elif
+static Empty::ExternalCPU   externalCpu;
+#endif
+
 
 HAL_Linux::HAL_Linux() :
     AP_HAL::HAL(
@@ -249,8 +269,10 @@ HAL_Linux::HAL_Linux() :
         &rcoutDriver,
         &schedulerInstance,
         &utilInstance,
-        &opticalFlow)
-{}
+        &opticalFlow,
+        &externalCpu)
+{
+}
 
 void _usage(void)
 {

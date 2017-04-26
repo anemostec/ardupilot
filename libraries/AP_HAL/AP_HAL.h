@@ -18,6 +18,7 @@
 #include "Semaphores.h"
 #include "Util.h"
 #include "OpticalFlow.h"
+#include "ExternalCPU.h"
 
 #include "utility/Print.h"
 #include "utility/Stream.h"

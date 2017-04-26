@@ -86,6 +86,11 @@ qflight: HAL_BOARD = HAL_BOARD_LINUX
 qflight: TOOLCHAIN = QFLIGHT
 qflight: all
 
+cerebro: HAL_BOARD = HAL_BOARD_LINUX
+cerebro: TOOLCHAIN = CEREBRO
+cerebro: BUILDSYS_DEPRECATED  = 1
+cerebro: all
+
 empty: HAL_BOARD = HAL_BOARD_EMPTY
 empty: TOOLCHAIN = AVR
 empty: all

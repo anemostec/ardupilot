@@ -45,6 +45,15 @@ BBONE_LD      :=  arm-linux-gnueabihf-g++
 BBONE_GDB     :=  gdb
 BBONE_OBJCOPY :=  objcopy
 
+# toolchains for Anemos Cerebro
+CEREBRO_CXX     :=  arm-linux-gnueabihf-g++
+CEREBRO_CC      :=  arm-linux-gnueabihf-gcc
+CEREBRO_AS      :=  arm-linux-gnueabihf-gcc
+CEREBRO_AR      :=  arm-linux-gnueabihf-ar
+CEREBRO_LD      :=  arm-linux-gnueabihf-g++
+CEREBRO_GDB     :=  arm-linux-gnueabihf-gdb
+CEREBRO_OBJCOPY :=  arm-linux-gnueabihf-obj
+
 # toolchains for Raspberry Pi
 RPI_CXX     :=  arm-linux-gnueabihf-g++
 RPI_CC      :=  arm-linux-gnueabihf-gcc
